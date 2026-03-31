@@ -1,6 +1,13 @@
 import OpenAI from "openai";
 
-export const llmClient = new OpenAI({
-  apiKey: process.env.DASHSCOPE_API_KEY!,
-  baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
-});
+let _client: OpenAI | null = null;
+
+export function getLLMClient(): OpenAI {
+  if (!_client) {
+    _client = new OpenAI({
+      apiKey: process.env.DASHSCOPE_API_KEY!,
+      baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    });
+  }
+  return _client;
+}

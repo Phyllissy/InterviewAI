@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { llmClient } from "@/lib/llm/client";
+import { getLLMClient } from "@/lib/llm/client";
 import { SYSTEM_PROMPT, buildUserPrompt } from "@/lib/llm/prompts";
 
 export async function POST(request: NextRequest) {
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const stream = await llmClient.chat.completions.create({
+    const stream = await getLLMClient().chat.completions.create({
       model: "qwen-plus",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
