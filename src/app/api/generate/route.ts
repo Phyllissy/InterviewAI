@@ -1,20 +1,17 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getLLMClient } from "@/lib/llm/client";
-import { SYSTEM_PROMPT, buildUserPrompt } from "@/lib/llm/prompts";
+import { buildSystemPrompt, buildUserPrompt } from "@/lib/llm/prompts";
+import type { Difficulty } from "@/types";
 
 export async function POST(request: NextRequest) {
+  // Auth is optional — guests can generate without logging in
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return new Response(JSON.stringify({ error: "未登录" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
+  await supabase.auth.getUser();
 
   try {
-    const { resumeText, jdText } = await request.json();
+    const { resumeText, jdText, difficulty: rawDifficulty } = await request.json();
+    const difficulty: Difficulty = ["easy", "medium", "hard"].includes(rawDifficulty) ? rawDifficulty : "medium";
 
     if (!resumeText || resumeText.length < 50) {
       return new Response(
@@ -33,7 +30,7 @@ export async function POST(request: NextRequest) {
     const stream = await getLLMClient().chat.completions.create({
       model: "qwen-plus",
       messages: [
-        { role: "system", content: SYSTEM_PROMPT },
+        { role: "system", content: buildSystemPrompt(difficulty) },
         { role: "user", content: buildUserPrompt(resumeText, jdText) },
       ],
       temperature: 0.7,

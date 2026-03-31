@@ -1,3 +1,5 @@
+export type Difficulty = "easy" | "medium" | "hard";
+
 export interface MatchAnalysis {
   score: number;
   strengths: string[];

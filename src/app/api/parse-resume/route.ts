@@ -1,14 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { extractTextFromPDF } from "@/lib/pdf";
-import { createClient } from "@/lib/supabase/server";
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: "未登录" }, { status: 401 });
-  }
-
   try {
     const formData = await request.formData();
     const file = formData.get("resume") as File | null;

@@ -32,6 +32,14 @@ export default function HomePage() {
           >
             立即开始 &rarr;
           </button>
+          {!user && (
+            <button
+              onClick={() => router.push("/dashboard")}
+              className="ml-3 rounded-lg border border-gray-300 px-8 py-3 text-sm font-medium text-gray-600 transition hover:bg-gray-50"
+            >
+              访客试用
+            </button>
+          )}
         </section>
 
         {/* Features */}

@@ -4,6 +4,7 @@ import { Navbar } from "@/components/ui/Navbar";
 import { HistorySidebar } from "@/components/sidebar/HistorySidebar";
 import { useState, createContext, useContext, useCallback } from "react";
 import { PanelLeftOpen } from "lucide-react";
+import { useAuth } from "@/components/auth/AuthProvider";
 import type { ReportSummary, GenerateResult } from "@/types";
 
 interface ViewedInputs {
@@ -41,6 +42,8 @@ export default function WorkspaceLayout({
   const [viewedResult, setViewedResult] = useState<GenerateResult | null>(null);
   const [viewedTitle, setViewedTitle] = useState("");
   const [viewedInputs, setViewedInputs] = useState<ViewedInputs | null>(null);
+  const { user } = useAuth();
+  const isGuest = !user;
 
   const addReport = useCallback((report: ReportSummary) => {
     setReports((prev) => [report, ...prev]);
@@ -76,15 +79,19 @@ export default function WorkspaceLayout({
       <div className="flex h-screen flex-col">
         <Navbar />
         <div className="flex flex-1 overflow-hidden">
-          <HistorySidebar open={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
-          {!sidebarOpen && (
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="flex-shrink-0 border-r border-gray-200 bg-white px-1.5 py-3 text-gray-400 transition hover:bg-gray-50 hover:text-gray-600"
-              title="展开历史记录"
-            >
-              <PanelLeftOpen size={16} />
-            </button>
+          {!isGuest && (
+            <>
+              <HistorySidebar open={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+              {!sidebarOpen && (
+                <button
+                  onClick={() => setSidebarOpen(true)}
+                  className="flex-shrink-0 border-r border-gray-200 bg-white px-1.5 py-3 text-gray-400 transition hover:bg-gray-50 hover:text-gray-600"
+                  title="展开历史记录"
+                >
+                  <PanelLeftOpen size={16} />
+                </button>
+              )}
+            </>
           )}
           <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
             {children}
