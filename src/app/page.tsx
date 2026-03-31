@@ -52,7 +52,7 @@ export default function HomePage() {
               智能面试题
             </h3>
             <p className="text-xs leading-relaxed text-gray-500">
-              基于简历与 JD 深度匹配，生成 8-12 道定制化问题，涵盖技术、行为、情景三大类别。
+              基于简历与 JD 深度匹配，生成 6-12 道定制化问题，涵盖简历深挖、业务场景、行业认知、技术理解四大类别。
             </p>
           </div>
 
